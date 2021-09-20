@@ -128,7 +128,8 @@ class RunnerRegistry:
                         'check_name': failed.get('check_name'),
                         'file_path': failed.get('file_path'),
                         'resource': failed.get('resource'),
-                        'check_class': failed.get('check_class')
+                        'check_class': failed.get('check_class'),
+                        'status': 'FAILED'
 
                     })
                 with open('output.json', 'w') as f:
