@@ -18,7 +18,6 @@ from checkov.terraform.context_parsers.registry import parser_registry
 from checkov.terraform.runner import Runner as tf_runner
 from checkov.terraform.parser import Parser
 
-
 CHECK_BLOCK_TYPES = frozenset(["resource", "data", "provider", "module"])
 OUTPUT_CHOICES = ["cli", "json", "junitxml", "github_failed_only", "sarif"]
 OUTPUT_DELIMITER = "\n--- OUTPUT DELIMITER ---\n"
@@ -42,13 +41,13 @@ class RunnerRegistry:
         raise NotImplementedError()
 
     def run(
-        self,
-        root_folder: Optional[str] = None,
-        external_checks_dir: Optional[List[str]] = None,
-        files: Optional[List[str]] = None,
-        guidelines: Optional[Dict[str, str]] = None,
-        collect_skip_comments: bool = True,
-        repo_root_for_plan_enrichment: Optional[List[Union[str, os.PathLike]]] = None,
+            self,
+            root_folder: Optional[str] = None,
+            external_checks_dir: Optional[List[str]] = None,
+            files: Optional[List[str]] = None,
+            guidelines: Optional[Dict[str, str]] = None,
+            collect_skip_comments: bool = True,
+            repo_root_for_plan_enrichment: Optional[List[Union[str, os.PathLike]]] = None,
     ) -> List[Report]:
         for runner in self.runners:
             integration_feature_registry.run_pre_runner()
@@ -70,12 +69,12 @@ class RunnerRegistry:
         return self.scan_reports
 
     def print_reports(
-        self,
-        scan_reports: List[Report],
-        config: argparse.Namespace,
-        url: Optional[str] = None,
-        created_baseline_path: Optional[str] = None,
-        baseline: Optional[Baseline] = None,
+            self,
+            scan_reports: List[Report],
+            config: argparse.Namespace,
+            url: Optional[str] = None,
+            created_baseline_path: Optional[str] = None,
+            baseline: Optional[Baseline] = None,
     ) -> Literal[0, 1]:
         output_formats = set(config.output)
 
@@ -119,8 +118,8 @@ class RunnerRegistry:
             if output_formats:
                 print(OUTPUT_DELIMITER)
         if "json" in config.output:
+            output = []
             if len(report_jsons) == 1:
-                output = []
                 for failed in report_jsons[0].get('results', {}).get('failed_checks'):
                     output.append({
                         'check_id': failed.get('check_id'),
@@ -137,6 +136,8 @@ class RunnerRegistry:
                 print(json.dumps(report_jsons[0], indent=4))
             else:
                 print(json.dumps(report_jsons, indent=4))
+                with open('output.json', 'w') as f:
+                    json.dump(output, f, indent=2)
             output_formats.remove("json")
             if output_formats:
                 print(OUTPUT_DELIMITER)
@@ -189,7 +190,7 @@ class RunnerRegistry:
                 out_definitions=tf_definitions,
                 out_parsing_errors=parsing_errors,
             )
-            repo_definitions[repo_root] = { 'tf_definitions': tf_definitions, 'parsing_errors': parsing_errors }
+            repo_definitions[repo_root] = {'tf_definitions': tf_definitions, 'parsing_errors': parsing_errors}
 
         enriched_resources = {}
         for repo_root, parse_results in repo_definitions.items():
