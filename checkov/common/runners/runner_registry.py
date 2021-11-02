@@ -121,7 +121,7 @@ class RunnerRegistry:
             output = []
             for report in report_jsons:
                 check_type = {
-                    'check_type': report.get('check_type'),
+                    'check_type': report.get('check_type', '').title(),
                     'results': []
                 }
                 for failed in report.get('results', {}).get('failed_checks'):
