@@ -119,25 +119,27 @@ class RunnerRegistry:
                 print(OUTPUT_DELIMITER)
         if "json" in config.output:
             output = []
-            if len(report_jsons) == 1:
-                for failed in report_jsons[0].get('results', {}).get('failed_checks'):
-                    output.append({
+            for report in report_jsons:
+                check_type = {
+                    'check_type': report.get('check_type'),
+                    'results': []
+                }
+                for failed in report.get('results', {}).get('failed_checks'):
+                    check_type['results'].append({
                         'check_id': failed.get('check_id'),
                         'bc_check_id': failed.get('bc_check_id'),
                         'check_name': failed.get('check_name'),
                         'file_path': failed.get('file_path'),
                         'resource': failed.get('resource'),
                         'check_class': failed.get('check_class'),
-                        'status': 'FAILED'
-
+                        'code_block': ''.join([i[1] for i in failed.get('code_block')])
                     })
-                with open('output.json', 'w') as f:
-                    json.dump(output, f, indent=2)
-                print(json.dumps(report_jsons[0], indent=4))
-            else:
-                print(json.dumps(report_jsons, indent=4))
-                with open('output.json', 'w') as f:
-                    json.dump(output, f, indent=2)
+                output.append(check_type)
+
+            with open('output.json', 'w') as f:
+                json.dump(output, f, indent=2)
+                print(json.dumps(report_jsons, indent=2))
+
             output_formats.remove("json")
             if output_formats:
                 print(OUTPUT_DELIMITER)
